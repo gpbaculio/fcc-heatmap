@@ -160,12 +160,6 @@ class App extends Component<AppProps, AppState> {
       .domain([minTemp, maxTemp])
       .range([0, legendWidth]);
 
-    const legendXAxis = d3
-      .axisBottom(legendX)
-      .tickSize(10)
-      .tickValues(legendThreshold.domain())
-      .tickFormat(d3.format('.1f'));
-
     var legend = svg
       .append('g')
       .classed('legend', true)
@@ -178,6 +172,36 @@ class App extends Component<AppProps, AppState> {
           (padding.top + height + padding.bottom - 2 * legendHeight) +
           ')'
       );
+
+    legend
+      .append('g')
+      .selectAll('rect')
+      .data(
+        legendThreshold.range().map(function(color) {
+          var d = legendThreshold.invertExtent(color);
+          if (d[0] == null) d[0] = legendX.domain()[0];
+          if (d[1] == null) d[1] = legendX.domain()[1];
+          return d;
+        })
+      )
+      .enter()
+      .append('rect')
+      .style('fill', d => legendThreshold(Number(d[0])))
+      .attr('x', d => legendX(Number(d[0])))
+      .attr('y', 0)
+      .attr('width', d => legendX(Number(d[1])) - legendX(Number(d[0])))
+      .attr('height', legendHeight);
+
+    const legendXAxis = d3
+      .axisBottom(legendX)
+      .tickSize(10)
+      .tickValues(legendThreshold.domain())
+      .tickFormat(d3.format('.1f'));
+
+    legend
+      .append('g')
+      .attr('transform', 'translate(' + 0 + ',' + legendHeight + ')')
+      .call(legendXAxis);
   };
   render() {
     return <div className='svg-container' />;
