@@ -202,6 +202,34 @@ class App extends Component<AppProps, AppState> {
       .append('g')
       .attr('transform', 'translate(' + 0 + ',' + legendHeight + ')')
       .call(legendXAxis);
+
+    //map
+    svg
+      .append('g')
+      .classed('map', true)
+      .attr(
+        'transform',
+        'translate(' + 9.1 * fontSize + ',' + padding.top + ')'
+      )
+      .selectAll('rect')
+      .data(data.monthlyVariance)
+      .enter()
+      .append('rect')
+      .attr('class', 'cell')
+      .attr('data-month', function(d) {
+        return d.month;
+      })
+      .attr('data-year', function(d) {
+        return d.year;
+      })
+      .attr('data-temp', function(d) {
+        return data.baseTemperature + d.variance;
+      })
+      .attr('x', (d, i) => Number(xScale(`${d.year}`)))
+      .attr('y', (d, i) => Number(yScale(`${d.month}`)))
+      .attr('width', () => xScale.bandwidth())
+      .attr('height', () => yScale.bandwidth())
+      .attr('fill', d => legendThreshold(data.baseTemperature + d.variance));
   };
   render() {
     return <div className='svg-container' />;
