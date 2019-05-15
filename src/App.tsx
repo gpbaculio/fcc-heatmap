@@ -60,7 +60,8 @@ class App extends Component<AppProps, AppState> {
       .select('.svg-container')
       .append('div')
       .attr('class', 'tooltip')
-      .attr('id', 'tooltip');
+      .attr('id', 'tooltip')
+      .style('opacity', 0);
 
     const svg = d3
       .select('.svg-container')
@@ -228,17 +229,21 @@ class App extends Component<AppProps, AppState> {
       .attr('width', () => xScale.bandwidth())
       .attr('height', () => yScale.bandwidth())
       .attr('fill', d => legendThreshold(data.baseTemperature + d.variance))
-      .on('mouseover', (_d, i, rects) => {
-        d3.select(rects[i]).style('outline', '1px solid black');
+      .on('mouseover', (d, i, rects) => {
+        const el = rects[i];
+        const date = new Date(d.year, d.month);
+        d3.select(el).style('outline', '1px solid black');
         tooltip.style('opacity', 0.9);
         tooltip
           .html(
-            `<div class='d-flex flex-column'>
-              asdasd
+            `<div class='d-flex flex-column justify-content-center align-items-center'>
+              <div>${d3.timeFormat('%Y - %B')(date)}</div>
+              <div>${d3.format('.1f')(data.baseTemperature + d.variance)}</div>
+              <div>${d3.format('+.1f')(d.variance)}</div>
             </div>`
           )
-          .style('left', d3.event.pageX + 'px')
-          .style('top', d3.event.pageY + 'px');
+          .style('left', el.x.baseVal.value + 85 + 'px')
+          .style('top', el.y.baseVal.value - yScale.bandwidth() - 20 + 'px');
       })
       .on('mouseout', (_d, i, rects) => {
         d3.select(rects[i]).style('outline', 'none');

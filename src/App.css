@@ -1,7 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans);
 
 .tooltip {
-  position: relative;
+  position: absolute;
   padding: 10px;
   font: 12px sans-serif;
   background: rgba(0, 0, 0, 0.8);
@@ -9,5 +9,5 @@
   color: #fff;
   border-radius: 8px;
   pointer-events: none;
-  width: 100px;
+  width: 120px;
 }
