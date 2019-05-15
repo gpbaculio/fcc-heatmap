@@ -57,11 +57,10 @@ class App extends Component<AppProps, AppState> {
       bottom: 8 * fontSize
     };
     const tooltip = d3
-      .select('body')
+      .select('.svg-container')
       .append('div')
       .attr('class', 'tooltip')
-      .attr('id', 'tooltip')
-      .style('opacity', 0);
+      .attr('id', 'tooltip');
 
     const svg = d3
       .select('.svg-container')
@@ -178,7 +177,7 @@ class App extends Component<AppProps, AppState> {
       .selectAll('rect')
       .data(
         legendThreshold.range().map(function(color) {
-          var d = legendThreshold.invertExtent(color);
+          let d = legendThreshold.invertExtent(color);
           if (d[0] == null) d[0] = legendX.domain()[0];
           if (d[1] == null) d[1] = legendX.domain()[1];
           return d;
@@ -202,7 +201,6 @@ class App extends Component<AppProps, AppState> {
       .append('g')
       .attr('transform', 'translate(' + 0 + ',' + legendHeight + ')')
       .call(legendXAxis);
-
     //map
     svg
       .append('g')
@@ -229,7 +227,23 @@ class App extends Component<AppProps, AppState> {
       .attr('y', (d, i) => Number(yScale(`${d.month}`)))
       .attr('width', () => xScale.bandwidth())
       .attr('height', () => yScale.bandwidth())
-      .attr('fill', d => legendThreshold(data.baseTemperature + d.variance));
+      .attr('fill', d => legendThreshold(data.baseTemperature + d.variance))
+      .on('mouseover', (_d, i, rects) => {
+        d3.select(rects[i]).style('outline', '1px solid black');
+        tooltip.style('opacity', 0.9);
+        tooltip
+          .html(
+            `<div class='d-flex flex-column'>
+              asdasd
+            </div>`
+          )
+          .style('left', d3.event.pageX + 'px')
+          .style('top', d3.event.pageY + 'px');
+      })
+      .on('mouseout', (_d, i, rects) => {
+        d3.select(rects[i]).style('outline', 'none');
+        tooltip.style('opacity', 0);
+      });
   };
   render() {
     return <div className='svg-container' />;
