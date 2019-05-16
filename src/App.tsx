@@ -56,6 +56,7 @@ class App extends Component<AppProps, AppState> {
       top: 1 * fontSize,
       bottom: 8 * fontSize
     };
+
     const tooltip = d3
       .select('.svg-container')
       .append('div')
@@ -63,12 +64,29 @@ class App extends Component<AppProps, AppState> {
       .attr('id', 'tooltip')
       .style('opacity', 0);
 
+    const title = d3.select('.svg-container');
+
+    title
+      .append('h1')
+      .attr('id', 'title')
+      .text('Monthly Global Land-Surface Temperature');
+    title
+      .append('h3')
+      .attr('id', 'description')
+      .html(
+        data.monthlyVariance[0].year +
+          ' - ' +
+          data.monthlyVariance[data.monthlyVariance.length - 1].year +
+          ': base temperature ' +
+          data.baseTemperature +
+          '&#8451;'
+      );
+
     const svg = d3
       .select('.svg-container')
       .append('svg')
       .attr('width', width + padding.left + padding.right)
       .attr('height', height + padding.top + padding.bottom);
-
     //yaxis
     const yScale = d3
       .scaleBand()
@@ -94,9 +112,10 @@ class App extends Component<AppProps, AppState> {
       .append('text')
       .text('Months')
       .style('text-anchor', 'middle')
+      .attr('id', 'months')
       .attr(
         'transform',
-        'translate(' + -7 * fontSize + ',' + height / 2 + ')' + 'rotate(-90)'
+        'translate(' + -4 * fontSize + ',' + height / 2 + ')' + 'rotate(-90)'
       );
 
     //ordinal scale
@@ -129,6 +148,7 @@ class App extends Component<AppProps, AppState> {
       )
       .call(xAxis)
       .append('text')
+      .attr('id', 'years')
       .text('Years')
       .style('text-anchor', 'middle')
       .attr('transform', 'translate(' + width / 2 + ',' + 3 * fontSize + ')');
@@ -235,6 +255,7 @@ class App extends Component<AppProps, AppState> {
         d3.select(el).style('outline', '1px solid black');
         tooltip.style('opacity', 0.9);
         tooltip
+          .attr('data-year', d.year)
           .html(
             `<div class='d-flex flex-column justify-content-center align-items-center'>
               <div>${d3.timeFormat('%Y - %B')(date)}</div>
@@ -243,7 +264,7 @@ class App extends Component<AppProps, AppState> {
             </div>`
           )
           .style('left', el.x.baseVal.value + 85 + 'px')
-          .style('top', el.y.baseVal.value - yScale.bandwidth() - 20 + 'px');
+          .style('top', el.y.baseVal.value + yScale.bandwidth() + 20 + 'px');
       })
       .on('mouseout', (_d, i, rects) => {
         d3.select(rects[i]).style('outline', 'none');
