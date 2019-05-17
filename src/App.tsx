@@ -263,8 +263,11 @@ class App extends Component<AppProps, AppState> {
               <div>${d3.format('+.1f')(d.variance)}</div>
             </div>`
           )
-          .style('left', el.x.baseVal.value + 85 + 'px')
-          .style('top', el.y.baseVal.value + yScale.bandwidth() + 20 + 'px');
+          .style('left', el.x.baseVal.value + 55 + 'px')
+          .style(
+            'top',
+            el.y.baseVal.value + yScale.bandwidth() * 2 + 40 + 'px'
+          );
       })
       .on('mouseout', (_d, i, rects) => {
         d3.select(rects[i]).style('outline', 'none');
